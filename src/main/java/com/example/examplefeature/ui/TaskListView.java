@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -48,11 +49,13 @@ class TaskListView extends Main {
     final Button createBtn;
     Button exportBtn = new Button("Exportar PDF", e -> UI.getCurrent().getPage().open("/api/tasks/export"));
     final Grid<Task> taskGrid;
+    final Anchor exportAnchor;
     final Upload qrUpload; // novo upload de QR codes
 
     TaskListView(TaskService taskService) {
         this.taskService = taskService;
 
+        // Campo descrição
         // Campo de descrição da tarefa
         description = new TextField();
         description.setPlaceholder("What do you want to do?");
@@ -60,11 +63,29 @@ class TaskListView extends Main {
         description.setMaxLength(Task.DESCRIPTION_MAX_LENGTH);
         description.setMinWidth("20em");
 
+        // Campo data limite
         // Campo de data
         dueDate = new DatePicker();
         dueDate.setPlaceholder("Due date");
         dueDate.setAriaLabel("Due date");
 
+        // Botão criar tarefa
+        createBtn = new Button("Create", event -> createTask());
+        createBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        // Botão exportar CSV (ligado ao endpoint REST)
+        exportAnchor = new Anchor("/api/tasks/export.csv", "");
+        exportAnchor.getElement().setAttribute("download", true);
+        Button exportBtn = new Button("Export CSV");
+        exportBtn.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        exportAnchor.add(exportBtn);
+
+        // Formatadores de data
+        var dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                .withLocale(getLocale())
+                .withZone(ZoneId.systemDefault());
+        var dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+                .withLocale(getLocale());
         // Botão criar
         createBtn = new Button("Create", event -> createTask());
         createBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -106,11 +127,28 @@ class TaskListView extends Main {
         taskGrid.setItems(query -> taskService.list(toSpringPageRequest(query)).stream());
         taskGrid.addColumn(Task::getDescription).setHeader("Description");
         taskGrid.addColumn(task -> Optional.ofNullable(task.getDueDate())
+                        .map(dateFormatter::format)
+                        .orElse("Never"))
+                .setHeader("Due Date");
                 .map(dateFormatter::format).orElse("Never")).setHeader("Due Date");
         taskGrid.addColumn(task -> dateTimeFormatter.format(task.getCreationDate()))
                 .setHeader("Creation Date");
         taskGrid.setSizeFull();
 
+        // Layout principal
+        setSizeFull();
+        addClassNames(
+                LumoUtility.BoxSizing.BORDER,
+                LumoUtility.Display.FLEX,
+                LumoUtility.FlexDirection.COLUMN,
+                LumoUtility.Padding.MEDIUM,
+                LumoUtility.Gap.SMALL
+        );
+
+        // Toolbar com os botões
+        add(new ViewToolbar("Task List",
+                ViewToolbar.group(description, dueDate, createBtn, exportAnchor))
+        );
         // Layout e estilo
         setSizeFull();
         addClassNames(LumoUtility.BoxSizing.BORDER, LumoUtility.Display.FLEX,
@@ -132,6 +170,7 @@ class TaskListView extends Main {
         Notification.show("Task added", 3000, Notification.Position.BOTTOM_END)
                 .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
+}
 
     /**
      * Método auxiliar para ler o texto de um QR Code usando ZXing.
