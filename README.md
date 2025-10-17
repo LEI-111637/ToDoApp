@@ -1,6 +1,24 @@
 # App README
 
-- [ ] TODO Replace or update this README with instructions relevant to your application
+Afonso Alves Nº111157
+João Correia Nº111637
+Alexandre Costa Nº111206
+
+## Link do vídeo Guião 2: https://youtu.be/zkLR_eQ4iUg
+
+Este projeto utiliza uma pipeline de integração contínua (CI) configurada com GitHub Actions para automatizar a criação do ficheiro .jar executável.
+
+## Funcionalidade da pipeline:
+
+A pipeline é executada automaticamente sempre que é feito um push para a branch principal (main).
+
+O ambiente é configurado com Java 21 (Temurin).
+
+É executado o comando mvn clean package, que gera o ficheiro .jar na pasta target/.
+
+O ficheiro .jar é:
+
+-Publicado como artefacto da execução (disponível em Actions → Artifacts → app-jar);
 
 ## Project Structure
 
