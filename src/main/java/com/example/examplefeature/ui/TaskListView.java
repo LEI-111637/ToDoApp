@@ -1,5 +1,6 @@
 package com.example.examplefeature.ui;
 
+
 import com.example.base.ui.component.ViewToolbar;
 import com.example.examplefeature.Task;
 import com.example.examplefeature.TaskService;
@@ -15,6 +16,7 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.component.UI;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +35,7 @@ class TaskListView extends Main {
     final TextField description;
     final DatePicker dueDate;
     final Button createBtn;
+    Button exportBtn = new Button("Exportar PDF", e -> UI.getCurrent().getPage().open("/api/tasks/export"));
     final Grid<Task> taskGrid;
 
     TaskListView(TaskService taskService) {
@@ -67,7 +70,7 @@ class TaskListView extends Main {
         addClassNames(LumoUtility.BoxSizing.BORDER, LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
                 LumoUtility.Padding.MEDIUM, LumoUtility.Gap.SMALL);
 
-        add(new ViewToolbar("Task List", ViewToolbar.group(description, dueDate, createBtn)));
+        add(new ViewToolbar("Task List", ViewToolbar.group(description, dueDate, createBtn,exportBtn)));
         add(taskGrid);
     }
 
