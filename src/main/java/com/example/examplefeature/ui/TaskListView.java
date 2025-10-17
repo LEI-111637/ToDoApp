@@ -1,5 +1,6 @@
 package com.example.examplefeature.ui;
 
+
 import com.example.base.ui.component.ViewToolbar;
 import com.example.examplefeature.Task;
 import com.example.examplefeature.TaskService;
@@ -20,6 +21,7 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.component.UI;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,6 +46,7 @@ class TaskListView extends Main {
     final TextField description;
     final DatePicker dueDate;
     final Button createBtn;
+    Button exportBtn = new Button("Exportar PDF", e -> UI.getCurrent().getPage().open("/api/tasks/export"));
     final Grid<Task> taskGrid;
     final Upload qrUpload; // novo upload de QR codes
 
@@ -117,6 +120,7 @@ class TaskListView extends Main {
         add(new ViewToolbar("Task List",
                 ViewToolbar.group(description, dueDate, createBtn, qrUpload)));
 
+        add(new ViewToolbar("Task List", ViewToolbar.group(description, dueDate, createBtn,exportBtn)));
         add(taskGrid);
     }
 
