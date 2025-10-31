@@ -12,7 +12,7 @@ jobs:
   sonarcloud:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -21,19 +21,18 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Cache Sonar
+      - name: Cache Maven packages
         uses: actions/cache@v3
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      - name: Run SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@master
+      - name: SonarCloud Scan with Maven
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=LEI-111637_ToDoApp
-            -Dsonar.organization=lei-111637
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.qualitygate.wait=true
+        run: mvn clean verify sonar:sonar \
+             -Dsonar.projectKey=LEI-111637_ToDoApp \
+             -Dsonar.organization=lei-111637 \
+             -Dsonar.host.url=https://sonarcloud.io \
+             -Dsonar.login=$SONAR_TOKEN \
+             -Dsonar.qualitygate.wait=true
