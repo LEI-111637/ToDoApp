@@ -36,7 +36,6 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: SonarQube Quality Gate Check
-        uses: sonarsource/sonarqube-quality-gate-check@v1
+        uses: sonarsource/sonarqube-quality-gate-action@v1
         with:
-          # Utilize o mesmo token criado nos Secrets
           sonar-token: ${{ secrets.SONAR_TOKEN }}
