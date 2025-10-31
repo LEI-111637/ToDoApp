@@ -32,7 +32,6 @@ jobs:
           args: >
             -Dsonar.projectKey=LEI-111637_ToDoApp
             -Dsonar.organization=lei-111637
-            -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: SonarQube Quality Gate Check
