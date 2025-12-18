@@ -1,7 +1,4 @@
 {
-  "name": "ToDoApp Dev Container (Java 17 + Maven)",
-  "image": "mcr.microsoft.com/devcontainers/java:1-17-bullseye",
-  "features": {
-    "ghcr.io/devcontainers/features/maven:1": {}
-  }
+  "name": "ToDoApp Dev Container (Maven+Java17)",
+  "image": "maven:3.9.6-eclipse-temurin-17"
 }
